@@ -9,10 +9,10 @@ interface ApiResponse {
   }>;
 }
 
-export const sendMessage = async (message: string): Promise<ApiResponse> => {
+export const sendMessage = async (message: string, model: string = 'gpt-3.5-turbo'): Promise<ApiResponse> => {
   try {
     console.log('Sending request to:', `${API_BASE_URL}/query`);
-    console.log('Request body:', { query: message });
+    console.log('Request body:', { query: message, model });
 
     // First check if the server is available
     try {
@@ -30,12 +30,12 @@ export const sendMessage = async (message: string): Promise<ApiResponse> => {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       },
-      body: JSON.stringify({ query: message }),
+      body: JSON.stringify({ query: message, model }),
     });
 
     console.log('Response status:', response.status);
     console.log('Response headers:', Object.fromEntries(response.headers.entries()));
-    
+
     if (!response.ok) {
       const errorText = await response.text();
       console.error('Server error response:', errorText);
@@ -44,7 +44,7 @@ export const sendMessage = async (message: string): Promise<ApiResponse> => {
 
     const data = await response.json();
     console.log('Server response data:', data);
-    
+
     if (!data.text) {
       console.error('Invalid response format:', data);
       throw new Error('Invalid response format from server');

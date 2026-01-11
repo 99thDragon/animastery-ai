@@ -23,6 +23,7 @@ app.add_middleware(
 
 class Query(BaseModel):
     query: str
+    model: str = "gpt-3.5-turbo"
 
 @app.get("/")
 async def root():
@@ -31,8 +32,8 @@ async def root():
 @app.post("/query")
 async def query_endpoint(query: Query):
     try:
-        logger.info(f"Received query: {query.query}")
-        response = process_query(query.query)
+        logger.info(f"Received query: {query.query} with model: {query.model}")
+        response = process_query(query.query, query.model)
         logger.info(f"Returning response: {response}")
         return response
     except Exception as e:

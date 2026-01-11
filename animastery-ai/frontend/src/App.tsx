@@ -21,10 +21,18 @@ interface VideoState {
   videoId: string | null;
 }
 
+const AVAILABLE_MODELS = [
+  { id: 'gpt-3.5-turbo', name: 'GPT-3.5 Turbo' },
+  { id: 'google/gemini-2.0-flash-exp:free', name: 'Gemini 2.0 Flash' },
+  { id: 'xiaomi/mimo-v2-flash:free', name: 'Xiaomi MiMo' },
+  { id: 'mistralai/mistral-7b-instruct:free', name: 'Mistral 7B' },
+];
+
 function App() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedModel, setSelectedModel] = useState(AVAILABLE_MODELS[0].id);
   const [isDark, setIsDark] = useState(() => {
     const savedTheme = localStorage.getItem('theme');
     return savedTheme ? savedTheme === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -33,7 +41,7 @@ function App() {
     isVisible: false,
     videoId: null
   });
-  
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -68,7 +76,7 @@ function App() {
     setIsLoading(true);
 
     try {
-      const response = await sendMessage(inputValue);
+      const response = await sendMessage(inputValue, selectedModel);
       setMessages((prev) => [...prev, {
         text: response.text,
         sender: 'assistant',
@@ -156,7 +164,20 @@ function App() {
 
   return (
     <div className={`app-container ${videoState.isVisible ? 'with-video' : ''}`}>
-      <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
+      <div className="top-controls">
+        <select
+          className="model-selector"
+          value={selectedModel}
+          onChange={(e) => setSelectedModel(e.target.value)}
+        >
+          {AVAILABLE_MODELS.map(model => (
+            <option key={model.id} value={model.id}>
+              {model.name}
+            </option>
+          ))}
+        </select>
+        <ThemeToggle isDark={isDark} onToggle={toggleTheme} />
+      </div>
 
       <div className="welcome-content">
         <h1 className="title">Animastery AI Assistant</h1>

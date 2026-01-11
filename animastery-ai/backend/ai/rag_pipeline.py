@@ -15,12 +15,17 @@ load_dotenv()
 
 # Initialize OpenAI API key
 openai_api_key = os.getenv("OPENAI_API_KEY")
+openai_base_url = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1")
+
 if not openai_api_key:
     raise ValueError("OPENAI_API_KEY environment variable is not set")
 
-logger.info("Initializing OpenAI client...")
+logger.info(f"Initializing OpenAI client with base_url: {openai_base_url}")
 # Initialize OpenAI client
-client = OpenAI(api_key=openai_api_key)
+client = OpenAI(
+    api_key=openai_api_key,
+    base_url=openai_base_url
+)
 
 def check_api_status():
     """Check OpenAI API status and quota."""
@@ -84,10 +89,10 @@ VERIFIED_TUTORIALS = [
     }
 ]
 
-def process_query(query: str) -> Dict[str, Any]:
+def process_query(query: str, model: str = "gpt-3.5-turbo") -> Dict[str, Any]:
     """Process a user query and return a response."""
     try:
-        logger.info(f"Processing query: {query}")
+        logger.info(f"Processing query: {query} using model: {model}")
         
         # Check for test query - make this the first condition
         if "test video button" in query.lower():
@@ -183,9 +188,9 @@ def process_query(query: str) -> Dict[str, Any]:
                 {"role": "user", "content": query}
             ]
             
-            logger.info("Making OpenAI API request...")
+            logger.info(f"Making OpenAI API request with model: {model}...")
             response = client.chat.completions.create(
-                model="gpt-3.5-turbo",
+                model=model,
                 messages=messages,
                 temperature=0.7
             )

@@ -115,11 +115,36 @@ body {
   width: 100%;
 }
 
-.theme-toggle-container {
+.top-controls {
   position: fixed;
   top: 20px;
   right: 20px;
   z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.model-selector {
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: 2px solid var(--primary-color);
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: inherit;
+  font-size: 0.9em;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.model-selector:hover, .model-selector:focus {
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 10px var(--shadow-color);
+}
+
+.theme-toggle-container {
+  /* Removed fixed positioning as it is now inside top-controls */
 }
 
 .theme-toggle {
@@ -130,10 +155,12 @@ body {
   padding: 8px;
   border-radius: 50%;
   transition: transform 0.3s ease;
+  color: var(--text-color);
 }
 
 .theme-toggle:hover {
   transform: scale(1.1);
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .welcome-content {
