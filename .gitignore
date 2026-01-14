@@ -45,4 +45,7 @@ Thumbs.db
 
 # Project specific
 animastery-ai/backend/.env
-animastery-ai/frontend/build/ 
+animastery-ai/frontend/build/
+
+# Claude Code
+CLAUDE.md
